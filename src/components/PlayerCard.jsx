@@ -1,5 +1,5 @@
-import ButtonCapacity from "./ButtonCapacity/ButtonCapacity";
-import ProgressBar from "./ProgressBar/ProgressBar";
+import ButtonCapacity from "./ButtonCapacity/ButtonCapacity.jsx";
+import ProgressBar from "./ProgressBar/ProgressBar.jsx";
 
 function PlayerCard({ player }) {
   return (

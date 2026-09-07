@@ -1,7 +1,11 @@
 import './Monster.css';
-import ProgressBar from "../ProgressBar/ProgressBar";
+import { useSelector } from "react-redux";
+import ProgressBar from "../ProgressBar/ProgressBar.jsx";
 
 function Monster() {
+
+const monstre = useSelector((state)=> state.fight.monster)
+
   return (
     <section>
       <div className="container">
@@ -26,8 +30,8 @@ function Monster() {
                 </div>
               </div>
               <ProgressBar
-                pv="800"
-                pvMax="800"
+                pv={monstre.pv}
+                pvMax={monstre.pvMax}
                 bgType="bg-danger"
                 faType="fa-heart"
                 barName=" : pv"
