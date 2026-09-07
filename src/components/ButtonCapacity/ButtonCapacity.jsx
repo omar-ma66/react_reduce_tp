@@ -1,8 +1,16 @@
  import "./ButtonCapacity.css";
-
+ import { useDispatch ,useSelector} from "react-redux";
+ import { hitMonster } from "../../features/fight/fightSlice";
 function ButtonCapacity() {
-  const fight = () => {
+ 
+  const dispatch = useDispatch();
+
+
+   const fight = () => {
     console.log("aie !");
+
+    dispatch(hitMonster(5));
+
   };
 
   return (
