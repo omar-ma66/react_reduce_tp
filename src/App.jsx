@@ -1,4 +1,4 @@
-import './App.css'
+import './style.css'
 import Monster from './components/Monster/Monster'
 import PlayerList from './components/PlayerList'
 import { useSelector ,useDispatch } from 'react-redux'

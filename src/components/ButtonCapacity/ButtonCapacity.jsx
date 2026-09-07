@@ -1,4 +1,4 @@
-import "./ButtonCapacity.css";
+ import "./ButtonCapacity.css";
 
 function ButtonCapacity() {
   const fight = () => {
