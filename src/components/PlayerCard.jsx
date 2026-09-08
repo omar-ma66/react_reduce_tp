@@ -1,13 +1,48 @@
+import { useState, useEffect, useRef } from "react";
 import ButtonCapacity from "./ButtonCapacity/ButtonCapacity.jsx";
 import ProgressBar from "./ProgressBar/ProgressBar.jsx";
+import "./PlayerCard.css";
 
 function PlayerCard({ player }) {
+  const [isHit, setIsHit] = useState(false);
+  const [lastDamage, setLastDamage] = useState(null);
+  const prevPvRef = useRef(player.pv);
+
+  useEffect(() => {
+    const prevPv = prevPvRef.current;
+    
+    // Si les PV ont diminué, on déclenche l'animation
+    if (player.pv < prevPv) {
+      const damageTaken = prevPv - player.pv;
+      setLastDamage(damageTaken);
+      setIsHit(true);
+
+      // On réinitialise l'animation après 800ms
+      const timer = setTimeout(() => {
+        setIsHit(false);
+        setLastDamage(null);
+      }, 800);
+
+      // Met à jour la référence
+      prevPvRef.current = player.pv;
+      return () => clearTimeout(timer);
+    }
+
+    prevPvRef.current = player.pv;
+  }, [player.pv]);
+
   return (
     <div
       key={player.id}
-      className="col-sm-3 card center"
+      className={`col-sm-3 card center ${isHit ? "player-card-hit" : ""}`}
       id={`joueur${player.id}`}
+      style={{ position: "relative" }}
     >
+      {/* Affichage du nombre de dégâts flottant au-dessus du joueur */}
+      {isHit && lastDamage !== null && (
+        <span className="damage-floating">-{lastDamage} PV</span>
+      )}
+
       <div className="card-body text-center">
         <h5 className="card-title">{player.name}</h5>
         <ProgressBar
@@ -24,19 +59,11 @@ function PlayerCard({ player }) {
           barName=" : mana "
         />
 
-        <span className="badge badge-danger ml-2 " id="degatSpanJ1"></span>
-        <div className="row ">
+        <div className="row mt-2">
           <div>
-            {/* 1. Attaque basique : 5 dégâts, 0 Mana */}
             <ButtonCapacity label="Frappe" type="damage" value={5} manaCost={0} icon="fa-fist-raised" player={player} />
-            
-            {/* 2. Attaque puissante : 20 dégâts, 10 Mana */}
             <ButtonCapacity label="Boule de feu" type="damage" value={20} manaCost={10} icon="fa-fire-alt" player={player} />
-            
-            {/* 3. Soin : Soigne jusqu'à 15 PV en dépensant jusqu'à 15 Mana */}
             <ButtonCapacity label="Soin" type="heal" value={15} icon="fa-medkit" player={player} />
-            
-            {/* 4. Méditation : Récupère jusqu'à 15 Mana en dépensant jusqu'à 15 PV */}
             <ButtonCapacity label="Méditation" type="manaRegen" value={15} icon="fa-bolt" player={player} />
           </div>
         </div>
