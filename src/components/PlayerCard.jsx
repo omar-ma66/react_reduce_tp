@@ -27,10 +27,10 @@ function PlayerCard({ player }) {
         <span className="badge badge-danger ml-2 " id="degatSpanJ1"></span>
         <div className="row ">
           <div>
-            <ButtonCapacity player={player} />
-            <ButtonCapacity player={player} />
-            <ButtonCapacity player={player} />
-            <ButtonCapacity player={player} />
+            <ButtonCapacity label="Frappe" damage={5} player={player} />
+            <ButtonCapacity label="Boule de feu" damage={15}player={player} />
+            <ButtonCapacity label="Coup critique" damage={30} player={player} />
+            <ButtonCapacity label="Ultime" damage={50} player={player} />
           </div>
         </div>
       </div>

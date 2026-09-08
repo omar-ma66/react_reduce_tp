@@ -19,6 +19,8 @@ const initialState = {
     pv:800,
     pvMax:800
   },
+ 
+ 
 };
 
 export const fightSlice = createSlice({
@@ -26,10 +28,19 @@ export const fightSlice = createSlice({
   initialState,
   reducers: {
     // Nous ajouterons nos actions ici plus tard
-    hitMonster:(state,action) =>{ const damage = action.payload }
+    hitMonster:(state,action) =>{ 
+      const damage = action.payload ;
+      state.monster.pv = Math.max(0,state.monster.pv - damage );
+    },
+    hitBack : (state,action)=>{
+      const playerId = action.payload;
+      if( state.players[playerId]){
+        state.players[playerId].pv = Math.max(0,state.players[playerId].pv-10);
+      }
+    }
   },
 });
 
 // Nous exportons le reducer généré automatiquement
-export const  { hitMonster } = fightSlice.actions ;
+export const  { hitMonster,hitBack } = fightSlice.actions ;
 export default fightSlice.reducer;

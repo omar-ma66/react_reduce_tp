@@ -1,15 +1,19 @@
  import "./ButtonCapacity.css";
  import { useDispatch ,useSelector} from "react-redux";
- import { hitMonster } from "../../features/fight/fightSlice";
-function ButtonCapacity() {
+ import { hitMonster,hitBack } from "../../features/fight/fightSlice";
+function ButtonCapacity({ label = "hit",damage = 5 ,icon ="fa-fire-alt",player}) 
+
+{
  
   const dispatch = useDispatch();
 
-
+ 
    const fight = () => {
-    console.log("aie !");
-
-    dispatch(hitMonster(5));
+     dispatch(hitMonster(damage));
+     if(player && player.id){
+      dispatch(hitBack(player.id))
+     }
+     console.log(`Attaque ${label} lancée avec ${damage} dégats !`);
 
   };
 
@@ -19,8 +23,9 @@ function ButtonCapacity() {
       onClick={fight}
       className="btn btn-success material-tooltip-main "
     >
-      hit
-      <i className="fas fa-bomb"></i> 5<i className="fas fa-fire-alt"></i> - 5
+
+      {label} <i className="fas fa-bomb"></i> { damage }<i className={`fas ${icon}`}></i>
+   
     </button>
   );
 }
