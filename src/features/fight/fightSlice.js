@@ -38,34 +38,40 @@ export const fightSlice = createSlice({
     useCapacity: (state, action) => {
       if (state.gameStatus !== "PLAYING") return;
 
-      const { playerId, type, value } = action.payload;
+      const { playerId, type, value, manaCost = 0 } = action.payload;
       const player = state.players[playerId];
 
       if (!player || player.pv <= 0) return;
 
+      // Attaque classique / Sort
       if (type === "damage") {
-        // Attaque ordinaire
+        if (player.mana < manaCost) return; // Sécurité si le mana est insuffisant
+
+        player.mana -= manaCost;
         state.monster.pv = Math.max(0, state.monster.pv - value);
+
         if (state.monster.pv === 0) {
           state.gameStatus = "VICTORY";
           state.message = "🎉 Victoire ! Vous avez vaincu le monstre !";
           return;
         }
-      } else if (type === "heal") {
-        // Soin : Soigne X PV en consommant X Mana
-        const actualHeal = Math.min(value, player.mana); // Ne peut pas soigner plus que le mana disponible
-        const realHealedPv = Math.min(actualHeal, player.pvMax - player.pv); // Ne dépasse pas les pvMax
+      } 
+      // Soin : Soigne du PV en consommant autant de Mana
+      else if (type === "heal") {
+        const actualHeal = Math.min(value, player.mana);
+        const realHealedPv = Math.min(actualHeal, player.pvMax - player.pv);
 
         player.pv += realHealedPv;
-        player.mana -= realHealedPv; // Coûte autant de mana que de PV restaurés
-        state.message = `${player.name} se soigne de ${realHealedPv} PV en dépensant ${realHealedPv} Mana !`;
-      } else if (type === "manaRegen") {
-        // Régénération de Mana : Gagne X Mana en consommant X PV
-        const actualRegen = Math.min(value, player.pv - 1); // Conserve au moins 1 PV pour ne pas se tuer soi-même
+        player.mana -= realHealedPv;
+        state.message = `${player.name} se soigne de ${realHealedPv} PV en dépendant ${realHealedPv} Mana !`;
+      } 
+      // Régénération de Mana : Gagne du Mana en consommant du PV
+      else if (type === "manaRegen") {
+        const actualRegen = Math.min(value, player.pv - 1);
         const realManaGain = Math.min(actualRegen, player.manaMax - player.mana);
 
         player.mana += realManaGain;
-        player.pv -= realManaGain; // Coûte autant de PV que de Mana restauré
+        player.pv -= realManaGain;
         state.message = `${player.name} sacrifie ${realManaGain} PV pour regagner ${realManaGain} Mana !`;
       }
     },
@@ -93,9 +99,7 @@ export const fightSlice = createSlice({
         }
       }
 
-      const allPlayersDead = Object.values(state.players).every(
-        (p) => p.pv === 0
-      );
+      const allPlayersDead = Object.values(state.players).every((p) => p.pv === 0);
 
       if (allPlayersDead) {
         state.gameStatus = "DEFEAT";

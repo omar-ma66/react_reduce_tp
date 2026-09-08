@@ -2,32 +2,56 @@ import "./ButtonCapacity.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useCapacity, hitBack, clearMessage } from "../../features/fight/fightSlice";
 
-function ButtonCapacity({ label = "Capacité", type = "damage", value = 5, icon = "fa-star", player }) {
+function ButtonCapacity({
+  label = "Capacité",
+  type = "damage",
+  value = 5,
+  manaCost = 0,
+  icon = "fa-star",
+  player,
+}) {
   const dispatch = useDispatch();
   const gameStatus = useSelector((state) => state.fight.gameStatus);
   const activePlayerId = useSelector((state) => state.fight.activePlayerId);
 
   const isMyTurn = activePlayerId === player?.id;
-  
-  // Vérifications d'éligibilité selon le type de capacité
-  let isResourceMissing = false;
-  if (type === "heal") {
-    // Impossible si pas de mana ou PV déjà au max
-    isResourceMissing = player?.mana === 0 || player?.pv === player?.pvMax;
-  } else if (type === "manaRegen") {
-    // Impossible si PV trop bas (<= 1) ou Mana déjà au max
-    isResourceMissing = player?.pv <= 1 || player?.mana === player?.manaMax;
-  }
+  const isPlayerAlive = player?.pv > 0;
+  const isGamePlaying = gameStatus === "PLAYING";
 
-  const isDisabled = !isMyTurn || player?.pv === 0 || gameStatus !== "PLAYING" || isResourceMissing;
+  // Vérification spécifique du manque de mana
+  const requiredMana = type === "heal" ? value : manaCost;
+  const hasNotEnoughMana = (player?.mana ?? 0) < requiredMana;
+
+  // Conditions spécifiques pour les autres capacités
+  const isHealInvalid = type === "heal" && (hasNotEnoughMana || player?.pv === player?.pvMax);
+  const isManaRegenInvalid = type === "manaRegen" && (player?.pv <= 1 || player?.mana === player?.manaMax);
+
+  // Le bouton est désactivé si :
+  // - Ce n'est pas son tour / joueur KO / partie finie
+  // - Manque de mana
+  // - Conditions de soin/regen non remplies
+  const isDisabled =
+    !isMyTurn ||
+    !isPlayerAlive ||
+    !isGamePlaying ||
+    (type === "damage" && hasNotEnoughMana) ||
+    isHealInvalid ||
+    isManaRegenInvalid;
+
+  // Choix de la couleur Bootstrap :
+  // - Bleu (btn-primary) si le bouton est bloqué à cause du MANA INSUFFISANT
+  // - Gris (btn-secondary) pour les autres désactivations
+  // - Vert (btn-success) quand il est actif
+  let buttonStyle = "btn-success";
+  if (isDisabled) {
+    buttonStyle = hasNotEnoughMana ? "btn-primary" : "btn-secondary";
+  }
 
   const handleAction = () => {
     if (isDisabled) return;
 
-    // 1. Déclenche l'action (dégâts, soin ou regen de mana)
-    dispatch(useCapacity({ playerId: player.id, type, value }));
+    dispatch(useCapacity({ playerId: player.id, type, value, manaCost }));
 
-    // 2. Le monstre réplique ensuite
     if (player && player.id) {
       dispatch(hitBack(player.id));
 
@@ -42,9 +66,10 @@ function ButtonCapacity({ label = "Capacité", type = "damage", value = 5, icon 
       type="button"
       onClick={handleAction}
       disabled={isDisabled}
-      className={`btn ${isDisabled ? "btn-secondary" : "btn-success"} material-tooltip-main m-1`}
+      className={`btn ${buttonStyle} material-tooltip-main m-1`}
     >
       {label} <i className={`fas ${icon}`}></i> ({value})
+      {manaCost > 0 && <span className="ml-1">💧{manaCost}</span>}
     </button>
   );
 }

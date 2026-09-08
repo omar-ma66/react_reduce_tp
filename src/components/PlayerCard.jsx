@@ -27,16 +27,16 @@ function PlayerCard({ player }) {
         <span className="badge badge-danger ml-2 " id="degatSpanJ1"></span>
         <div className="row ">
           <div>
-            {/* 1. Attaque Basique */}
-            <ButtonCapacity label="Frappe" type="damage" value={5} icon="fa-fist-raised" player={player} />
+            {/* 1. Attaque basique : 5 dégâts, 0 Mana */}
+            <ButtonCapacity label="Frappe" type="damage" value={5} manaCost={0} icon="fa-fist-raised" player={player} />
             
-            {/* 2. Attaque Puissante */}
-            <ButtonCapacity label="Coup lourd" type="damage" value={20} icon="fa-bomb" player={player} />
+            {/* 2. Attaque puissante : 20 dégâts, 10 Mana */}
+            <ButtonCapacity label="Boule de feu" type="damage" value={20} manaCost={10} icon="fa-fire-alt" player={player} />
             
-            {/* 3. Soin (Restaure des PV en consommant du Mana) */}
+            {/* 3. Soin : Soigne jusqu'à 15 PV en dépensant jusqu'à 15 Mana */}
             <ButtonCapacity label="Soin" type="heal" value={15} icon="fa-medkit" player={player} />
             
-            {/* 4. Récupération de Mana (Restaure du Mana en consommant des PV) */}
+            {/* 4. Méditation : Récupère jusqu'à 15 Mana en dépensant jusqu'à 15 PV */}
             <ButtonCapacity label="Méditation" type="manaRegen" value={15} icon="fa-bolt" player={player} />
           </div>
         </div>
