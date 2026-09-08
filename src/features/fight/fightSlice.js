@@ -19,7 +19,7 @@ const initialState = {
     pv:800,
     pvMax:800
   },
- 
+ message:"" ,
  
 };
 
@@ -34,13 +34,26 @@ export const fightSlice = createSlice({
     },
     hitBack : (state,action)=>{
       const playerId = action.payload;
-      if( state.players[playerId]){
-        state.players[playerId].pv = Math.max(0,state.players[playerId].pv-10);
-      }
+      const player   = state.players[playerId];
+         if(player){
+          const hasMissed = Math.random() < 0.2 ;
+           if(hasMissed) {
+            state.message = `${state.monster.nom} a raté son attaque constre ${player.name} !`;
+           }
+           else{
+            const monsterDamage = Math.floor(Math.random()* 6) + 3 ;
+            player.pv = Math.max(0, player.pv - monsterDamage);
+          state.message = `${state.monster.nom} riposte et inflige ${monsterDamage} dégâts à ${player.name} !`;
+           }
+         }
+   
+    },
+    clearMessage : (state)=> { 
+      state.message = "" ;
     }
   },
 });
 
 // Nous exportons le reducer généré automatiquement
-export const  { hitMonster,hitBack } = fightSlice.actions ;
+export const  { hitMonster,hitBack ,clearMessage } = fightSlice.actions ;
 export default fightSlice.reducer;

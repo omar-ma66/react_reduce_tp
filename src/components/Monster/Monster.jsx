@@ -4,7 +4,8 @@ import ProgressBar from "../ProgressBar/ProgressBar.jsx";
 
 function Monster() {
 
-const monstre = useSelector((state)=> state.fight.monster)
+const monstre = useSelector((state)=> state.fight.monster) ;
+const message = useSelector((state)=> state.fight.message ) ;
 
   return (
     <section>
@@ -13,6 +14,7 @@ const monstre = useSelector((state)=> state.fight.monster)
           <div className="card-monstre col-sm-12">
             <div id="monsterCard">
               <div className="text-center">
+                { message && ( <div className="alert alert-warning text-center font-weight-bold my-2" role='alert'>{message}</div>)}
                 <div className="row">
                   <div className="col-sm-2 offset-sm-3">
                     <span
