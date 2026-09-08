@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+/* ################################################################################################## */
 const initialState = {
   players: {
     1: { name: "John", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 1 },
@@ -13,8 +14,26 @@ const initialState = {
     pvMax: 800,
   },
   message: "",
-  gameStatus: "PLAYING", // États possibles: "PLAYING", "VICTORY", "DEFEAT"
+  gameStatus: "PLAYING", // États possibles: "PLAYING", "VICTORY", "DEFEAT",
+  activePlayerId: 1, // ID du joueur c'est donc a lui de jouer .
 };
+/* ################################################################################################## */
+// Fonction utilitaire pour trouver le prochain joueur vivant
+const getNextActivePlayer = (players, currentId) => {
+  const playerIds = Object.keys(players).map(Number);
+  const currentIndex = playerIds.indexOf(currentId);for (let i = 1; i <= playerIds.length; i++) {
+    const nextIndex = (currentIndex + i) % playerIds.length;
+    const nextId = playerIds[nextIndex];
+    if (players[nextId].pv > 0) {
+      return nextId;
+    }
+  }
+  return currentId;
+};
+
+
+
+/* ################################################################################################## */
 
 export const fightSlice = createSlice({
   name: "fight",
@@ -57,12 +76,14 @@ export const fightSlice = createSlice({
 
       // Condition de DÉFAITE : tous les joueurs ont 0 PV
       const allPlayersDead = Object.values(state.players).every(
-        (p) => p.pv === 0
+        (p) => p.pv === 0,
       );
 
       if (allPlayersDead) {
         state.gameStatus = "DEFEAT";
         state.message = "💀 Défaite ! Tous les joueurs ont été éliminés...";
+      }else{
+        state.activePlayerId = getNextActivePlayer(state.players,playerId);
       }
     },
     clearMessage: (state) => {
@@ -73,6 +94,7 @@ export const fightSlice = createSlice({
     },
   },
 });
+/* ################################################################################################## */
 
 export const { hitMonster, hitBack, clearMessage } = fightSlice.actions;
 export default fightSlice.reducer;

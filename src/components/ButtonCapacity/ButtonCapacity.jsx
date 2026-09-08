@@ -5,9 +5,14 @@ import { hitMonster, hitBack, clearMessage } from "../../features/fight/fightSli
 function ButtonCapacity({ label = "hit", damage = 5, icon = "fa-fire-alt", player }) {
   const dispatch = useDispatch();
   const gameStatus = useSelector((state) => state.fight.gameStatus);
+  const activePlayerId = useSelector((state) => state.fight.activePlayerId);
 
-  // Le joueur ne peut plus attaquer s'il a 0 PV ou si la partie est finie
-  const isDisabled = player?.pv === 0 || gameStatus !== "PLAYING";
+  // Le bouton est actif SEULEMENT si :
+  // - C'est le tour du joueur
+  // - Le joueur a des PV > 0
+  // - La partie est toujours en cours ("PLAYING")
+  const isMyTurn = activePlayerId === player?.id;
+  const isDisabled = !isMyTurn || player?.pv === 0 || gameStatus !== "PLAYING";
 
   const fight = () => {
     if (isDisabled) return;
