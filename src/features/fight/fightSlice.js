@@ -13,12 +13,19 @@ const initialState = {
     pvMax: 800,
   },
   activePlayerId: 1,
+  turnsCount: 0, // Compteur d'actions pour détecter la fin d'un tour complet de 4 joueurs
   message: "",
   gameStatus: "PLAYING",
 };
 
+// Récupère la liste des joueurs vivants
+const getAlivePlayers = (players) => {
+  return Object.values(players).filter((p) => p.pv > 0);
+};
+
+// Détermine le prochain joueur actif vivant
 const getNextActivePlayer = (players, currentId) => {
-  const playerIds = Object.keys(players).map(Number);
+  const playerIds = Object.keys(players).map(Number); // .map((p)=> return Number(p););
   const currentIndex = playerIds.indexOf(currentId);
 
   for (let i = 1; i <= playerIds.length; i++) {
@@ -45,7 +52,7 @@ export const fightSlice = createSlice({
 
       // Attaque classique / Sort
       if (type === "damage") {
-        if (player.mana < manaCost) return; // Sécurité si le mana est insuffisant
+        if (player.mana < manaCost) return;
 
         player.mana -= manaCost;
         state.monster.pv = Math.max(0, state.monster.pv - value);
@@ -56,16 +63,16 @@ export const fightSlice = createSlice({
           return;
         }
       } 
-      // Soin : Soigne du PV en consommant autant de Mana
+      // Soin
       else if (type === "heal") {
         const actualHeal = Math.min(value, player.mana);
         const realHealedPv = Math.min(actualHeal, player.pvMax - player.pv);
 
         player.pv += realHealedPv;
         player.mana -= realHealedPv;
-        state.message = `${player.name} se soigne de ${realHealedPv} PV en dépendant ${realHealedPv} Mana !`;
+        state.message = `${player.name} se soigne de ${realHealedPv} PV en dépensant ${realHealedPv} Mana !`;
       } 
-      // Régénération de Mana : Gagne du Mana en consommant du PV
+      // Régénération de Mana
       else if (type === "manaRegen") {
         const actualRegen = Math.min(value, player.pv - 1);
         const realManaGain = Math.min(actualRegen, player.manaMax - player.mana);
@@ -79,33 +86,54 @@ export const fightSlice = createSlice({
     hitBack: (state, action) => {
       if (state.gameStatus !== "PLAYING") return;
 
-      const playerId = action.payload;
-      const player = state.players[playerId];
+      const currentPlayerId = action.payload;
+      state.turnsCount += 1;
 
-      if (player && player.pv > 0) {
-        const hasMissed = Math.random() < 0.2;
+      // 1. Gestion de la riposte aléatoire (50% de chance)
+      const willCounter = Math.random() < 0.5;
+      const alivePlayers = getAlivePlayers(state.players);
 
-        if (hasMissed) {
-          state.message = `${state.monster.nom} a raté sa riposte contre ${player.name} !`;
+      if (willCounter && alivePlayers.length > 0) {
+        // Cible aléatoire parmi les joueurs vivants
+        const randomTarget = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+        const monsterDamage = Math.floor(Math.random() * 6) + 3; // Dégâts normaux (3 à 8)
+
+        randomTarget.pv = Math.max(0, randomTarget.pv - monsterDamage);
+
+        if (randomTarget.pv === 0) {
+          state.message = `${state.monster.nom} riposte et met ${randomTarget.name} K.O. (-${monsterDamage} PV) !`;
         } else {
-          const monsterDamage = Math.floor(Math.random() * 6) + 3;
-          player.pv = Math.max(0, player.pv - monsterDamage);
+          state.message = `${state.monster.nom} riposte au hasard sur ${randomTarget.name} (-${monsterDamage} PV) !`;
+        }
+      } else {
+        state.message = `${state.monster.nom} n'a pas riposté !`;
+      }
 
-          if (player.pv === 0) {
-            state.message = `${player.name} est K.O. !`;
-          } else if (!state.message) {
-            state.message = `${state.monster.nom} inflige ${monsterDamage} dégâts à ${player.name} !`;
-          }
+      // 2. Attaque spéciale tous les 4 tours d'action
+      if (state.turnsCount >= 4) {
+        state.turnsCount = 0; // Réinitialise le compteur
+
+        const remainingAlive = getAlivePlayers(state.players);
+        if (remainingAlive.length > 0) {
+          // Choisit une cible au hasard pour l'attaque puissante
+          const bossTarget = remainingAlive[Math.floor(Math.random() * remainingAlive.length)];
+          const heavyDamage = (Math.floor(Math.random() * 6) + 3) * 2; // Dégâts x2 (6 à 16)
+
+          bossTarget.pv = Math.max(0, bossTarget.pv - heavyDamage);
+
+          state.message += ` ⚡ ATTAQUE PUISSANTE DU MONSTRE ! ${bossTarget.name} subit ${heavyDamage} dégâts !`;
         }
       }
 
+      // 3. Vérification de fin de partie (Défaite)
       const allPlayersDead = Object.values(state.players).every((p) => p.pv === 0);
 
       if (allPlayersDead) {
         state.gameStatus = "DEFEAT";
         state.message = "💀 Défaite ! Tous les joueurs ont été éliminés...";
       } else {
-        state.activePlayerId = getNextActivePlayer(state.players, playerId);
+        // Passer au joueur suivant
+        state.activePlayerId = getNextActivePlayer(state.players, currentPlayerId);
       }
     },
 
