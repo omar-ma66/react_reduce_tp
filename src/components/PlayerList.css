@@ -1,0 +1,17 @@
+/* Conteneur principal alignant les cartes de joueurs (remplace .row) */
+.players-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 0;
+}
+
+/* Style de l'état de chargement */
+.players-loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: #6c757d;
+}

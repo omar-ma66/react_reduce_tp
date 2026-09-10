@@ -26,10 +26,7 @@ function ButtonCapacity({
   const isHealInvalid = type === "heal" && (hasNotEnoughMana || player?.pv === player?.pvMax);
   const isManaRegenInvalid = type === "manaRegen" && (player?.pv <= 1 || player?.mana === player?.manaMax);
 
-  // Le bouton est désactivé si :
-  // - Ce n'est pas son tour / joueur KO / partie finie
-  // - Manque de mana
-  // - Conditions de soin/regen non remplies
+  // Conditions de désactivation
   const isDisabled =
     !isMyTurn ||
     !isPlayerAlive ||
@@ -38,13 +35,10 @@ function ButtonCapacity({
     isHealInvalid ||
     isManaRegenInvalid;
 
-  // Choix de la couleur Bootstrap :
-  // - Bleu (btn-primary) si le bouton est bloqué à cause du MANA INSUFFISANT
-  // - Gris (btn-secondary) pour les autres désactivations
-  // - Vert (btn-success) quand il est actif
-  let buttonStyle = "btn-success";
+  // Gestion de la variante de style en CSS pur
+  let statusClass = "btn-capacity-active";
   if (isDisabled) {
-    buttonStyle = hasNotEnoughMana ? "btn-primary" : "btn-secondary";
+    statusClass = hasNotEnoughMana ? "btn-capacity-no-mana" : "btn-capacity-disabled";
   }
 
   const handleAction = () => {
@@ -66,10 +60,10 @@ function ButtonCapacity({
       type="button"
       onClick={handleAction}
       disabled={isDisabled}
-      className={`btn ${buttonStyle} material-tooltip-main m-1`}
+      className={`btn-capacity ${statusClass}`}
     >
       {label} <i className={`fas ${icon}`}></i> ({value})
-      {manaCost > 0 && <span className="ml-1">💧{manaCost}</span>}
+      {manaCost > 0 && <span className="mana-cost">💧{manaCost}</span>}
     </button>
   );
 }

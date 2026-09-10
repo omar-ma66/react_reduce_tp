@@ -1,3 +1,40 @@
+/* Style du conteneur de la carte (remplace .col-sm-3 et .card) */
+.player-card {
+  position: relative;
+  flex: 1 1 calc(25% - 1rem); /* Équivalent Bootstrap col-sm-3 (4 par ligne) */
+  min-width: 240px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+/* Corps de la carte (remplace .card-body et .text-center) */
+.player-card-body {
+  padding: 1.25rem;
+  text-align: center;
+}
+
+/* Titre du joueur (remplace .card-title) */
+.player-card-title {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+/* Zone des boutons d'actions (remplace .row et .mt-2) */
+.player-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
 /* Animation de secousse pour la carte */
 @keyframes shake {
   0% { transform: translateX(0); }

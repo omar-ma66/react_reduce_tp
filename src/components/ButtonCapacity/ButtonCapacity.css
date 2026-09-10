@@ -1,7 +1,51 @@
-.btn {
-  padding: 0.1em 0.2rem !important ;
+/* Style de base du bouton (remplace .btn, .m-1) */
+.btn-capacity {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.65rem;
+  margin: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
+/* Variante active / disponible (remplace btn-success) */
+.btn-capacity-active {
+  background-color: #198754;
+  color: #ffffff;
+}
+
+.btn-capacity-active:hover {
+  background-color: #157347;
+}
+
+/* Variante bloqué par manque de mana (remplace btn-primary) */
+.btn-capacity-no-mana {
+  background-color: #0d6efd;
+  color: #ffffff;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Variante désactivé par défaut (remplace btn-secondary) */
+.btn-capacity-disabled {
+  background-color: #6c757d;
+  color: #ffffff;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Espacement du coût en mana (remplace .ml-1) */
+.mana-cost {
+  margin-left: 0.25rem;
+}
+
+/* Style spécifique pour l'icône fa-bomb */
 .fa-bomb {
-  color: black;
+  color: #000000;
 }

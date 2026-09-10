@@ -34,17 +34,17 @@ function PlayerCard({ player }) {
   return (
     <div
       key={player.id}
-      className={`col-sm-3 card center ${isHit ? "player-card-hit" : ""}`}
+      className={`player-card ${isHit ? "player-card-hit" : ""}`}
       id={`joueur${player.id}`}
-      style={{ position: "relative" }}
     >
       {/* Affichage du nombre de dégâts flottant au-dessus du joueur */}
       {isHit && lastDamage !== null && (
         <span className="damage-floating">-{lastDamage} PV</span>
       )}
 
-      <div className="card-body text-center">
-        <h5 className="card-title">{player.name}</h5>
+      <div className="player-card-body">
+        <h5 className="player-card-title">{player.name}</h5>
+        
         <ProgressBar
           pv={player.pv}
           pvMax={player.pvMax}
@@ -57,15 +57,14 @@ function PlayerCard({ player }) {
           pvMax={player.manaMax}
           faType="fa-fire-alt"
           barName=" : mana "
+          bgType="bg-primary"
         />
 
-        <div className="row mt-2">
-          <div>
-            <ButtonCapacity label="Frappe" type="damage" value={5} manaCost={0} icon="fa-fist-raised" player={player} />
-            <ButtonCapacity label="Boule de feu" type="damage" value={20} manaCost={10} icon="fa-fire-alt" player={player} />
-            <ButtonCapacity label="Soin" type="heal" value={15} icon="fa-medkit" player={player} />
-            <ButtonCapacity label="Méditation" type="manaRegen" value={15} icon="fa-bolt" player={player} />
-          </div>
+        <div className="player-actions">
+          <ButtonCapacity label="Frappe" type="damage" value={5} manaCost={0} icon="fa-fist-raised" player={player} />
+          <ButtonCapacity label="Boule de feu" type="damage" value={20} manaCost={10} icon="fa-fire-alt" player={player} />
+          <ButtonCapacity label="Soin" type="heal" value={15} icon="fa-medkit" player={player} />
+          <ButtonCapacity label="Méditation" type="manaRegen" value={15} icon="fa-bolt" player={player} />
         </div>
       </div>
     </div>

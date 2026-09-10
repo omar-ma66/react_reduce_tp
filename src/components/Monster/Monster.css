@@ -1,3 +1,73 @@
-.card-monstre {
+/* Conteneur principal */
+.monster-section {
+  width: 100%;
   margin-top: 10px;
+}
+
+.monster-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.monster-card {
+  width: 100%;
+  text-align: center;
+}
+
+/* Bannière d'alerte / message */
+.monster-alert {
+  padding: 0.75rem 1.25rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Variantes d'alerte */
+.monster-alert-success {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.monster-alert-danger {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+.monster-alert-warning {
+  background-color: #fff3cd;
+  color: #664d03;
+  border: 1px solid #ffecb5;
+}
+
+/* Disposition centrée du monstre et du combo */
+.monster-content {
+  display: flex;
+  flex-direction: column; /* Aligne l'image et le combo verticalement et les centre */
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.monster-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.monster-image {
+  max-width: 200px; /* Taille optimale pour l'image du monstre */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.monster-combo {
+  width: 100%;
+  text-align: center;
 }
