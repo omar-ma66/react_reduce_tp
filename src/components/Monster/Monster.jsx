@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import "./Monster.css";
 import { useSelector } from "react-redux";
 import ProgressBar from "../ProgressBar/ProgressBar.jsx";
@@ -7,7 +8,32 @@ function Monster() {
   const message = useSelector((state) => state.fight.message);
   const gameStatus = useSelector((state) => state.fight.gameStatus);
 
-  // Détermination de la classe de message en CSS pur
+  const [isHit, setIsHit] = useState(false);
+  const [lastDamage, setLastDamage] = useState(null);
+  const prevPvRef = useRef(monstre.pv);
+
+  // Détection des dégâts reçus par le monstre
+  useEffect(() => {
+    const prevPv = prevPvRef.current;
+
+    if (monstre.pv < prevPv) {
+      const damageTaken = prevPv - monstre.pv;
+      setLastDamage(damageTaken);
+      setIsHit(true);
+
+      const timer = setTimeout(() => {
+        setIsHit(false);
+        setLastDamage(null);
+      }, 800);
+
+      prevPvRef.current = monstre.pv;
+      return () => clearTimeout(timer);
+    }
+
+    prevPvRef.current = monstre.pv;
+  }, [monstre.pv]);
+
+  // Détermination de la classe de message
   let alertClass = "monster-alert-warning";
   if (gameStatus === "VICTORY") {
     alertClass = "monster-alert-success";
@@ -27,7 +53,11 @@ function Monster() {
           )}
 
           <div className="monster-content">
-            <div className="monster-image-wrapper">
+            <div className={`monster-image-wrapper ${isHit ? "monster-hit" : ""}`}>
+              {/* Dégâts flottants au-dessus du monstre */}
+              {isHit && lastDamage !== null && (
+                <span className="monster-damage-floating">-{lastDamage} PV</span>
+              )}
               <img
                 className="monster-image"
                 src="http://res.publicdomainfiles.com/pdf_view/67/13925387417373.png"

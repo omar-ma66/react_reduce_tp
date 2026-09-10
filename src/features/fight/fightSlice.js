@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   players: {
-    1: { name: "John", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 1 },
-    2: { name: "Jack", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 2 },
-    3: { name: "Jessy", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 3 },
-    4: { name: "Jenny", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 4 },
+    1: { name: "John", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 1,avatar:"/avatar/avatar1.jpg" },
+    2: { name: "Jack", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 2,avatar:"/avatar/avatar2.jpg"},
+    3: { name: "Jessy", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 3,avatar:"/avatar/avatar3.jpg" },
+    4: { name: "Jenny", pv: 100, pvMax: 100, mana: 30, manaMax: 30, id: 4,avatar:"/avatar/avatar4.jpg" },
   },
   monster: {
     nom: "Crypto",

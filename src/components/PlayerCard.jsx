@@ -3,7 +3,7 @@ import ButtonCapacity from "./ButtonCapacity/ButtonCapacity.jsx";
 import ProgressBar from "./ProgressBar/ProgressBar.jsx";
 import "./PlayerCard.css";
 
-function PlayerCard({ player }) {
+function PlayerCard({ player ,backcolor }) {
   const [isHit, setIsHit] = useState(false);
   const [lastDamage, setLastDamage] = useState(null);
   const prevPvRef = useRef(player.pv);
@@ -11,19 +11,16 @@ function PlayerCard({ player }) {
   useEffect(() => {
     const prevPv = prevPvRef.current;
     
-    // Si les PV ont diminué, on déclenche l'animation
     if (player.pv < prevPv) {
       const damageTaken = prevPv - player.pv;
       setLastDamage(damageTaken);
       setIsHit(true);
 
-      // On réinitialise l'animation après 800ms
       const timer = setTimeout(() => {
         setIsHit(false);
         setLastDamage(null);
       }, 800);
 
-      // Met à jour la référence
       prevPvRef.current = player.pv;
       return () => clearTimeout(timer);
     }
@@ -31,18 +28,29 @@ function PlayerCard({ player }) {
     prevPvRef.current = player.pv;
   }, [player.pv]);
 
+
+   
+
   return (
     <div
       key={player.id}
-      className={`player-card ${isHit ? "player-card-hit" : ""}`}
+      className={`player-card ${isHit ? "player-card-hit" : ""} ${backcolor}` }
       id={`joueur${player.id}`}
     >
-      {/* Affichage du nombre de dégâts flottant au-dessus du joueur */}
       {isHit && lastDamage !== null && (
         <span className="damage-floating">-{lastDamage} PV</span>
       )}
 
       <div className="player-card-body">
+        {/* Avatar du personnage */}
+        <div className="player-avatar-wrapper">
+          <img
+            src={player.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=" + player.name}
+            alt={player.name}
+            className="player-avatar"
+          />
+        </div>
+
         <h5 className="player-card-title">{player.name}</h5>
         
         <ProgressBar
