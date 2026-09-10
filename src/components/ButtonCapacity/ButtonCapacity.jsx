@@ -35,6 +35,17 @@ function ButtonCapacity({
     isHealInvalid ||
     isManaRegenInvalid;
 
+  // Conditions de désactivation (sans contrainte de tour)
+// const isDisabled =
+//   !isPlayerAlive ||
+//   !isGamePlaying ||
+//   (type === "damage" && hasNotEnoughMana) ||
+//   isHealInvalid ||
+//   isManaRegenInvalid;
+// Conditions de désactivation (sans contrainte de tour)
+
+
+
   // Gestion de la variante de style en CSS pur
   let statusClass = "btn-capacity-active";
   if (isDisabled) {

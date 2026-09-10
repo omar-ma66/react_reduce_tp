@@ -1,0 +1,39 @@
+.simultaneous-attack-container {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  width: 100%;
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 10px #ff9900;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 25px #ff3300;
+    transform: scale(1.03);
+  }
+  100% {
+    box-shadow: 0 0 10px #ff9900;
+    transform: scale(1);
+  }
+}
+
+.btn-simultaneous-attack {
+  background: linear-gradient(135deg, #ff9900, #ff0055);
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.8rem 1.8rem;
+  border: 2px solid #ffe600;
+  border-radius: 30px;
+  cursor: pointer;
+  animation: pulseGlow 1.5s infinite ease-in-out;
+  transition: all 0.2s ease;
+}
+
+.btn-simultaneous-attack:hover {
+  transform: scale(1.07);
+  background: linear-gradient(135deg, #ffaa00, #ff0077);
+}

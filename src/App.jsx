@@ -3,6 +3,7 @@ import PlayerList from './components/PlayerList';
 import { useSelector, useDispatch } from 'react-redux';
 import { function1, function2, function3 } from './features/Slice/mySlice';
 import './App.css';
+import SimultaneousAttackButton from './components/SimultaneousAttackButton/SimultaneousAttackButton';
 
 function App() {
   const data_val = useSelector((state) => state.sliceTiroir.data_name);
@@ -10,7 +11,7 @@ function App() {
 
   return (
     <div className="app-main-container">
-      <div className="app-debug-toolbar">
+      <div className="app-debug-toolbar" style={{color:"#000"}}>
         <span className="app-debug-label">{data_val}</span>
         <button className="app-btn-debug" onClick={() => dispatch(function1())}>
           Click function 1
@@ -25,6 +26,7 @@ function App() {
 
       <main className="app-content">
         <Monster />
+        <SimultaneousAttackButton />
         <section className="app-players-wrapper">
           <PlayerList />
         </section>
